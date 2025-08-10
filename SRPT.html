@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Periodic Table of AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        .container {
+            max-width: 2200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .header p {
+            color: #a0a0a0;
+            font-size: 1em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .legend-color {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .periodic-table {
+            display: grid;
+            grid-template-columns: repeat(18, 80px);
+            grid-template-rows: repeat(12, 80px);
+            gap: 3px;
+            min-width: 1500px;
+            margin: 0 auto;
+        }
+
+        .element {
+            background: #1a1a2e;
+            border: 2px solid;
+            border-radius: 4px;
+            padding: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .element:hover {
+            transform: scale(1.15);
+            z-index: 100;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Category colors */
+        .element.llm {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border-color: #60a5fa;
+        }
+
+        .element.embedding {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border-color: #a78bfa;
+        }
+
+        .element.nlp {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            border-color: #22d3ee;
+        }
+
+        .element.framework {
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-color: #34d399;
+        }
+
+        .element.orchestration {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border-color: #fbbf24;
+        }
+
+        .element.agent {
+            background: linear-gradient(135deg, #ec4899, #db2777);
+            border-color: #f472b6;
+        }
+
+        .element.vector {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border-color: #f87171;
+        }
+
+        .element.tuning {
+            background: linear-gradient(135deg, #14b8a6, #0d9488);
+            border-color: #2dd4bf;
+        }
+
+        .element.prompt {
+            background: linear-gradient(135deg, #a855f7, #9333ea);
+            border-color: #c084fc;
+        }
+
+        .element.security {
+            background: linear-gradient(135deg, #64748b, #475569);
+            border-color: #94a3b8;
+        }
+
+        .element.serving {
+            background: linear-gradient(135deg, #84cc16, #65a30d);
+            border-color: #a3e635;
+        }
+
+        .element.observability {
+            background: linear-gradient(135deg, #fb923c, #f97316);
+            border-color: #fdba74;
+        }
+
+        /* Tier modifiers */
+        .element.opensource {
+            box-shadow: inset 0 0 0 2px rgba(16, 185, 129, 0.3);
+        }
+
+        .element.commercial {
+            box-shadow: inset 0 0 0 2px rgba(245, 158, 11, 0.3);
+        }
+
+        .element.hyperscaler {
+            box-shadow: inset 0 0 0 2px rgba(239, 68, 68, 0.3);
+        }
+
+        .element-number {
+            position: absolute;
+            top: 2px;
+            left: 4px;
+            font-size: 0.6em;
+            opacity: 0.7;
+            font-weight: 500;
+        }
+
+        .element-symbol {
+            font-size: 1.8em;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 2px;
+        }
+
+        .element-name {
+            font-size: 0.65em;
+            line-height: 1;
+            opacity: 0.9;
+            font-weight: 500;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .element-weight {
+            position: absolute;
+            bottom: 2px;
+            right: 4px;
+            font-size: 0.55em;
+            opacity: 0.7;
+        }
+
+        /* Special badges */
+        .element.new::before {
+            content: '★';
+            position: absolute;
+            top: 2px;
+            right: 4px;
+            color: #fbbf24;
+            font-size: 0.7em;
+        }
+
+        .element.popular::after {
+            content: '◆';
+            position: absolute;
+            bottom: 2px;
+            left: 4px;
+            color: #f472b6;
+            font-size: 0.6em;
+        }
+
+        .group-label {
+            grid-column: span 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7em;
+            font-weight: 600;
+            text-transform: uppercase;
+            opacity: 0.5;
+            writing-mode: vertical-lr;
+            text-orientation: mixed;
+        }
+
+        .period-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7em;
+            font-weight: 600;
+            opacity: 0.5;
+        }
+
+        .empty {
+            background: transparent;
+        }
+
+        .tooltip {
+            position: fixed;
+            background: rgba(0, 0, 0, 0.95);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            max-width: 250px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tooltip.show {
+            opacity: 1;
+        }
+
+        .tooltip-title {
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .tooltip-info {
+            font-size: 0.9em;
+            color: #d0d0d0;
+        }
+
+        .tooltip-info div {
+            margin: 2px 0;
+        }
+
+        @keyframes glow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .element.new {
+            animation: glow 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>The Periodic Table of AI</h1>
+            <p>A Comprehensive Framework for AI Technologies</p>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #3b82f6, #2563eb);"></div>
+                <span>LLMs</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);"></div>
+                <span>Embeddings</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #06b6d4, #0891b2);"></div>
+                <span>NLP</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #10b981, #059669);"></div>
+                <span>Frameworks</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #f59e0b, #d97706);"></div>
+                <span>Orchestration</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #ec4899, #db2777);"></div>
+                <span>Agents</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #ef4444, #dc2626);"></div>
+                <span>Vector/RAG</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #14b8a6, #0d9488);"></div>
+                <span>Fine-tuning</span>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="periodic-table" id="periodicTable"></div>
+        </div>
+    </div>
+
+    <div class="tooltip" id="tooltip">
+        <div class="tooltip-title"></div>
+        <div class="tooltip-info"></div>
+    </div>
+
+    <script>
+        const elements = [
+            // Row 1 - LLMs (Open Source)
+            { symbol: 'Ll', name: 'Llama', number: '1', weight: '70B', category: 'llm', tier: 'opensource', tags: ['popular'], row: 1, col: 1 },
+            { symbol: 'Mi', name: 'Mistral', number: '2', weight: '8x7B', category: 'llm', tier: 'opensource', tags: ['popular'], row: 1, col: 2 },
+            { symbol: 'Gm', name: 'Gemma', number: '3', weight: '7B', category: 'llm', tier: 'opensource', tags: ['new'], row: 1, col: 3 },
+            { symbol: 'Go', name: 'GPT-OSS', number: '4', weight: 'VAR', category: 'llm', tier: 'opensource', tags: ['new'], row: 1, col: 4 },
+            { symbol: 'Ph', name: 'Phi-3', number: '5', weight: '14B', category: 'llm', tier: 'opensource', tags: ['new'], row: 1, col: 5 },
+            { symbol: 'Fa', name: 'Falcon', number: '6', weight: '180B', category: 'llm', tier: 'opensource', tags: [], row: 1, col: 6 },
+            { symbol: 'Bl', name: 'BLOOM', number: '7', weight: '176B', category: 'llm', tier: 'opensource', tags: [], row: 1, col: 7 },
+            { symbol: 'Vi', name: 'Vicuna', number: '8', weight: '33B', category: 'llm', tier: 'opensource', tags: [], row: 1, col: 8 },
+            { symbol: 'Ol', name: 'OLMo', number: '9', weight: '7B', category: 'llm', tier: 'opensource', tags: ['new'], row: 1, col: 9 },
+            { symbol: 'Qw', name: 'Qwen', number: '10', weight: '72B', category: 'llm', tier: 'opensource', tags: ['new'], row: 1, col: 10 },
+            
+            // Row 2 - LLMs (Commercial)
+            { symbol: 'Gp', name: 'GPT-4', number: '11', weight: '1.7T', category: 'llm', tier: 'commercial', tags: ['popular'], row: 2, col: 1 },
+            { symbol: 'Cl', name: 'Claude', number: '12', weight: 'VAR', category: 'llm', tier: 'commercial', tags: ['popular', 'new'], row: 2, col: 2 },
+            { symbol: 'Ge', name: 'Gemini', number: '13', weight: 'Ultra', category: 'llm', tier: 'commercial', tags: ['new'], row: 2, col: 3 },
+            { symbol: 'Co', name: 'Cohere', number: '14', weight: 'CMD', category: 'llm', tier: 'commercial', tags: [], row: 2, col: 4 },
+            { symbol: 'A2', name: 'AI21', number: '15', weight: 'J2', category: 'llm', tier: 'commercial', tags: [], row: 2, col: 5 },
+            { symbol: 'Px', name: 'Perplexity', number: '16', weight: 'Online', category: 'llm', tier: 'commercial', tags: ['new'], row: 2, col: 6 },
+            
+            // Row 3 - LLMs (Hyperscaler)
+            { symbol: 'Ti', name: 'Titan', number: '17', weight: 'AWS', category: 'llm', tier: 'hyperscaler', tags: [], row: 3, col: 1 },
+            { symbol: 'Pa', name: 'PaLM', number: '18', weight: 'GCP', category: 'llm', tier: 'hyperscaler', tags: [], row: 3, col: 2 },
+            { symbol: 'Ao', name: 'Azure OpenAI', number: '19', weight: 'Azure', category: 'llm', tier: 'hyperscaler', tags: ['popular'], row: 3, col: 3 },
+            { symbol: 'Bd', name: 'Bedrock', number: '20', weight: 'AWS', category: 'llm', tier: 'hyperscaler', tags: ['new'], row: 3, col: 4 },
+            
+            // Embeddings (Open Source) - Column 11-13
+            { symbol: 'Bg', name: 'BGE', number: '21', weight: 'M3', category: 'embedding', tier: 'opensource', tags: ['popular'], row: 1, col: 11 },
+            { symbol: 'Gt', name: 'GTE', number: '22', weight: 'Large', category: 'embedding', tier: 'opensource', tags: ['new'], row: 1, col: 12 },
+            { symbol: 'No', name: 'Nomic', number: '23', weight: '1.5', category: 'embedding', tier: 'opensource', tags: ['new'], row: 1, col: 13 },
+            { symbol: 'E5', name: 'E5', number: '24', weight: 'V3', category: 'embedding', tier: 'opensource', tags: ['popular'], row: 1, col: 14 },
+            { symbol: 'Ji', name: 'Jina', number: '25', weight: 'V2', category: 'embedding', tier: 'opensource', tags: [], row: 1, col: 15 },
+            
+            // Embeddings (Commercial)
+            { symbol: 'Ad', name: 'Ada', number: '26', weight: 'OAI', category: 'embedding', tier: 'commercial', tags: [], row: 2, col: 11 },
+            { symbol: 'T3', name: 'Text-3', number: '27', weight: 'OAI', category: 'embedding', tier: 'commercial', tags: ['new', 'popular'], row: 2, col: 12 },
+            { symbol: 'Ce', name: 'Cohere-E', number: '28', weight: 'V3', category: 'embedding', tier: 'commercial', tags: ['new'], row: 2, col: 13 },
+            { symbol: 'Vy', name: 'Voyage', number: '29', weight: 'AI', category: 'embedding', tier: 'commercial', tags: ['new'], row: 2, col: 14 },
+            
+            // ML Frameworks (Open Source) - Row 4
+            { symbol: 'Pt', name: 'PyTorch', number: '30', weight: '2.0', category: 'framework', tier: 'opensource', tags: ['popular'], row: 4, col: 1 },
+            { symbol: 'Tf', name: 'TensorFlow', number: '31', weight: '2.0', category: 'framework', tier: 'opensource', tags: ['popular'], row: 4, col: 2 },
+            { symbol: 'Jx', name: 'JAX', number: '32', weight: '0.4', category: 'framework', tier: 'opensource', tags: ['popular'], row: 4, col: 3 },
+            { symbol: 'Sk', name: 'Scikit', number: '33', weight: '1.3', category: 'framework', tier: 'opensource', tags: ['popular'], row: 4, col: 4 },
+            { symbol: 'Xg', name: 'XGBoost', number: '34', weight: '2.0', category: 'framework', tier: 'opensource', tags: [], row: 4, col: 5 },
+            { symbol: 'Lg', name: 'LightGBM', number: '35', weight: '4.0', category: 'framework', tier: 'opensource', tags: [], row: 4, col: 6 },
+            
+            // ML Frameworks (Commercial) - Row 5
+            { symbol: 'Wb', name: 'W&B', number: '36', weight: 'SaaS', category: 'framework', tier: 'commercial', tags: ['popular'], row: 5, col: 1 },
+            { symbol: 'Np', name: 'Neptune', number: '37', weight: 'AI', category: 'framework', tier: 'commercial', tags: [], row: 5, col: 2 },
+            { symbol: 'Cm', name: 'Comet', number: '38', weight: 'ML', category: 'framework', tier: 'commercial', tags: [], row: 5, col: 3 },
+            { symbol: 'Dt', name: 'Determined', number: '39', weight: 'AI', category: 'framework', tier: 'commercial', tags: [], row: 5, col: 4 },
+            
+            // ML Frameworks (Hyperscaler) - Row 6
+            { symbol: 'Sm', name: 'SageMaker', number: '40', weight: 'AWS', category: 'framework', tier: 'hyperscaler', tags: ['popular'], row: 6, col: 1 },
+            { symbol: 'Vx', name: 'Vertex AI', number: '41', weight: 'GCP', category: 'framework', tier: 'hyperscaler', tags: ['popular'], row: 6, col: 2 },
+            { symbol: 'Am', name: 'Azure ML', number: '42', weight: 'Azure', category: 'framework', tier: 'hyperscaler', tags: ['popular'], row: 6, col: 3 },
+            { symbol: 'Db', name: 'Databricks', number: '43', weight: 'Multi', category: 'framework', tier: 'hyperscaler', tags: ['popular'], row: 6, col: 4 },
+            
+            // Orchestration (Open Source) - Row 4, cols 7-12
+            { symbol: 'Af', name: 'Airflow', number: '44', weight: '2.7', category: 'orchestration', tier: 'opensource', tags: ['popular'], row: 4, col: 7 },
+            { symbol: 'Pf', name: 'Prefect', number: '45', weight: '2.0', category: 'orchestration', tier: 'opensource', tags: ['popular'], row: 4, col: 8 },
+            { symbol: 'Dg', name: 'Dagster', number: '46', weight: '1.5', category: 'orchestration', tier: 'opensource', tags: ['popular'], row: 4, col: 9 },
+            { symbol: 'N8', name: 'n8n', number: '47', weight: '1.0', category: 'orchestration', tier: 'opensource', tags: ['popular'], row: 4, col: 10 },
+            { symbol: 'Nr', name: 'Node-RED', number: '48', weight: '3.0', category: 'orchestration', tier: 'opensource', tags: [], row: 4, col: 11 },
+            { symbol: 'Tm', name: 'Temporal', number: '49', weight: '1.0', category: 'orchestration', tier: 'opensource', tags: ['new'], row: 4, col: 12 },
+            
+            // Orchestration (Commercial) - Row 5, cols 7-10
+            { symbol: 'Zp', name: 'Zapier', number: '50', weight: 'SaaS', category: 'orchestration', tier: 'commercial', tags: ['popular'], row: 5, col: 7 },
+            { symbol: 'Mk', name: 'Make', number: '51', weight: 'SaaS', category: 'orchestration', tier: 'commercial', tags: ['popular'], row: 5, col: 8 },
+            { symbol: 'Pd', name: 'Pipedream', number: '52', weight: 'SaaS', category: 'orchestration', tier: 'commercial', tags: [], row: 5, col: 9 },
+            { symbol: 'Rt', name: 'Retool', number: '53', weight: 'SaaS', category: 'orchestration', tier: 'commercial', tags: ['popular'], row: 5, col: 10 },
+            
+            // Agents (Open Source) - Row 7
+            { symbol: 'Ag', name: 'AutoGen', number: '54', weight: 'MS', category: 'agent', tier: 'opensource', tags: ['popular', 'new'], row: 7, col: 1 },
+            { symbol: 'Cr', name: 'CrewAI', number: '55', weight: '1.0', category: 'agent', tier: 'opensource', tags: ['popular', 'new'], row: 7, col: 2 },
+            { symbol: 'Lc', name: 'LangChain', number: '56', weight: '0.1', category: 'agent', tier: 'opensource', tags: ['popular'], row: 7, col: 3 },
+            { symbol: 'Li', name: 'LlamaIndex', number: '57', weight: '0.9', category: 'agent', tier: 'opensource', tags: ['popular'], row: 7, col: 4 },
+            { symbol: 'Ap', name: 'AutoGPT', number: '58', weight: '0.5', category: 'agent', tier: 'opensource', tags: [], row: 7, col: 5 },
+            { symbol: 'Sa', name: 'SuperAGI', number: '59', weight: '0.1', category: 'agent', tier: 'opensource', tags: [], row: 7, col: 6 },
+            
+            // Agents (Commercial) - Row 8
+            { symbol: 'Fx', name: 'Fixie', number: '60', weight: 'AI', category: 'agent', tier: 'commercial', tags: [], row: 8, col: 1 },
+            { symbol: 'Du', name: 'Dust', number: '61', weight: 'TT', category: 'agent', tier: 'commercial', tags: [], row: 8, col: 2 },
+            { symbol: 'Rv', name: 'Relevance', number: '62', weight: 'AI', category: 'agent', tier: 'commercial', tags: [], row: 8, col: 3 },
+            { symbol: 'Ad', name: 'Adept', number: '63', weight: 'AI', category: 'agent', tier: 'commercial', tags: [], row: 8, col: 4 },
+            
+            // Vector/RAG (Open Source) - Row 7, cols 7-12
+            { symbol: 'Ch', name: 'Chroma', number: '64', weight: 'DB', category: 'vector', tier: 'opensource', tags: ['popular'], row: 7, col: 7 },
+            { symbol: 'Fs', name: 'FAISS', number: '65', weight: 'Meta', category: 'vector', tier: 'opensource', tags: ['popular'], row: 7, col: 8 },
+            { symbol: 'Qd', name: 'Qdrant', number: '66', weight: '1.7', category: 'vector', tier: 'opensource', tags: ['popular'], row: 7, col: 9 },
+            { symbol: 'Pv', name: 'pgvector', number: '67', weight: '0.5', category: 'vector', tier: 'opensource', tags: ['popular'], row: 7, col: 10 },
+            { symbol: 'Mv', name: 'Milvus', number: '68', weight: '2.3', category: 'vector', tier: 'opensource', tags: [], row: 7, col: 11 },
+            { symbol: 'Ld', name: 'LanceDB', number: '69', weight: '0.3', category: 'vector', tier: 'opensource', tags: ['new'], row: 7, col: 12 },
+            
+            // Vector/RAG (Commercial) - Row 8, cols 7-11
+            { symbol: 'Pc', name: 'Pinecone', number: '70', weight: 'SaaS', category: 'vector', tier: 'commercial', tags: ['popular'], row: 8, col: 7 },
+            { symbol: 'Wv', name: 'Weaviate', number: '71', weight: 'Cloud', category: 'vector', tier: 'commercial', tags: [], row: 8, col: 8 },
+            { symbol: 'Zl', name: 'Zilliz', number: '72', weight: 'Cloud', category: 'vector', tier: 'commercial', tags: [], row: 8, col: 9 },
+            { symbol: 'Ss', name: 'SingleStore', number: '73', weight: 'DB', category: 'vector', tier: 'commercial', tags: [], row: 8, col: 10 },
+            { symbol: 'Qc', name: 'Qdrant Cloud', number: '74', weight: 'SaaS', category: 'vector', tier: 'commercial', tags: [], row: 8, col: 11 },
+            
+            // Fine-tuning (Open Source) - Row 10
+            { symbol: 'Ax', name: 'Axolotl', number: '75', weight: 'Tool', category: 'tuning', tier: 'opensource', tags: ['popular', 'new'], row: 10, col: 1 },
+            { symbol: 'Pe', name: 'PEFT', number: '76', weight: 'HF', category: 'tuning', tier: 'opensource', tags: ['popular'], row: 10, col: 2 },
+            { symbol: 'Lo', name: 'LoRA', number: '77', weight: 'Tech', category: 'tuning', tier: 'opensource', tags: ['popular'], row: 10, col: 3 },
+            { symbol: 'Ql', name: 'QLoRA', number: '78', weight: '4bit', category: 'tuning', tier: 'opensource', tags: ['new'], row: 10, col: 4 },
+            { symbol: 'Ds', name: 'DeepSpeed', number: '79', weight: 'MS', category: 'tuning', tier: 'opensource', tags: [], row: 10, col: 5 },
+            { symbol: 'Un', name: 'Unsloth', number: '80', weight: '2x', category: 'tuning', tier: 'opensource', tags: ['new'], row: 10, col: 6 },
+            
+            // Fine-tuning (Commercial) - Row 11
+            { symbol: 'Tg', name: 'Together', number: '81', weight: 'AI', category: 'tuning', tier: 'commercial', tags: ['popular'], row: 11, col: 1 },
+            { symbol: 'Mo', name: 'Monster', number: '82', weight: 'API', category: 'tuning', tier: 'commercial', tags: [], row: 11, col: 2 },
+            { symbol: 'Pb', name: 'Predibase', number: '83', weight: 'ML', category: 'tuning', tier: 'commercial', tags: ['new'], row: 11, col: 3 },
+            { symbol: 'An', name: 'Anyscale', number: '84', weight: 'Ray', category: 'tuning', tier: 'commercial', tags: [], row: 11, col: 4 },
+            { symbol: 'Fw', name: 'Fireworks', number: '85', weight: 'AI', category: 'tuning', tier: 'commercial', tags: ['new'], row: 11, col: 5 },
+            
+            // Prompt Engineering (Open Source) - Row 10, cols 7-12
+            { symbol: 'Ls', name: 'LangSmith', number: '86', weight: 'LC', category: 'prompt', tier: 'opensource', tags: ['popular'], row: 10, col: 7 },
+            { symbol: 'Gd', name: 'Guidance', number: '87', weight: 'MS', category: 'prompt', tier: 'opensource', tags: [], row: 10, col: 8 },
+            { symbol: 'Ou', name: 'Outlines', number: '88', weight: 'FSM', category: 'prompt', tier: 'opensource', tags: ['new'], row: 10, col: 9 },
+            { symbol: 'Dp', name: 'DSPy', number: '89', weight: 'Stan', category: 'prompt', tier: 'opensource', tags: ['new'], row: 10, col: 10 },
+            { symbol: 'In', name: 'Instructor', number: '90', weight: 'Pyd', category: 'prompt', tier: 'opensource', tags: ['new'], row: 10, col: 11 },
+            
+            // Security (Open Source) - Row 10, cols 13-16
+            { symbol: 'Ga', name: 'Guardrails', number: '91', weight: 'AI', category: 'security', tier: 'opensource', tags: ['popular', 'new'], row: 10, col: 13 },
+            { symbol: 'Ng', name: 'NeMo Guard', number: '92', weight: 'NV', category: 'security', tier: 'opensource', tags: ['new'], row: 10, col: 14 },
+            { symbol: 'Pr', name: 'Presidio', number: '93', weight: 'MS', category: 'security', tier: 'opensource', tags: [], row: 10, col: 15 },
+            { symbol: 'Lg', name: 'LlamaGuard', number: '94', weight: 'Meta', category: 'security', tier: 'opensource', tags: ['new'], row: 10, col: 16 },
+            
+            // Model Serving (Open Source) - Row 7, cols 13-18
+            { symbol: 'Vl', name: 'vLLM', number: '95', weight: 'Fast', category: 'serving', tier: 'opensource', tags: ['popular', 'new'], row: 7, col: 13 },
+            { symbol: 'Tg', name: 'TGI', number: '96', weight: 'HF', category: 'serving', tier: 'opensource', tags: ['popular'], row: 7, col: 14 },
+            { symbol: 'Ol', name: 'Ollama', number: '97', weight: 'Local', category: 'serving', tier: 'opensource', tags: ['popular', 'new'], row: 7, col: 15 },
+            { symbol: 'La', name: 'LocalAI', number: '98', weight: 'OSS', category: 'serving', tier: 'opensource', tags: [], row: 7, col: 16 },
+            { symbol: 'Ts', name: 'TorchServe', number: '99', weight: 'PT', category: 'serving', tier: 'opensource', tags: [], row: 7, col: 17 },
+            { symbol: 'Tr', name: 'Triton', number: '100', weight: 'NV', category: 'serving', tier: 'opensource', tags: [], row: 7, col: 18 },
+            
+            // Model Serving (Commercial) - Row 8, cols 13-17
+            { symbol: 'Rp', name: 'Replicate', number: '101', weight: 'API', category: 'serving', tier: 'commercial', tags: ['popular'], row: 8, col: 13 },
+            { symbol: 'Md', name: 'Modal', number: '102', weight: 'Labs', category: 'serving', tier: 'commercial', tags: ['popular'], row: 8, col: 14 },
+            { symbol: 'Bt', name: 'Baseten', number: '103', weight: 'ML', category: 'serving', tier: 'commercial', tags: [], row: 8, col: 15 },
+            { symbol: 'Hf', name: 'HF Inference', number: '104', weight: 'API', category: 'serving', tier: 'commercial', tags: ['popular'], row: 8, col: 16 },
+            { symbol: 'Gr', name: 'Groq', number: '105', weight: 'LPU', category: 'serving', tier: 'commercial', tags: ['new', 'popular'], row: 8, col: 17 },
+            
+            // Observability (Open Source) - Row 4, cols 13-18
+            { symbol: 'Mf', name: 'MLflow', number: '106', weight: 'DB', category: 'observability', tier: 'opensource', tags: ['popular'], row: 4, col: 13 },
+            { symbol: 'Px', name: 'Phoenix', number: '107', weight: 'Arise', category: 'observability', tier: 'opensource', tags: ['new'], row: 4, col: 14 },
+            { symbol: 'Lf', name: 'Langfuse', number: '108', weight: 'OSS', category: 'observability', tier: 'opensource', tags: ['new'], row: 4, col: 15 },
+            { symbol: 'Om', name: 'OpenLLM', number: '109', weight: 'Tel', category: 'observability', tier: 'opensource', tags: ['new'], row: 4, col: 16 },
+            { symbol: 'Pm', name: 'Prometheus', number: '110', weight: 'CNCF', category: 'observability', tier: 'opensource', tags: [], row: 4, col: 17 },
+            { symbol: 'Gf', name: 'Grafana', number: '111', weight: 'Dash', category: 'observability', tier: 'opensource', tags: [], row: 4, col: 18 },
+            
+            // Observability (Commercial) - Row 5, cols 13-17
+            { symbol: 'Dd', name: 'DataDog', number: '112', weight: 'APM', category: 'observability', tier: 'commercial', tags: ['popular'], row: 5, col: 13 },
+            { symbol: 'Az', name: 'Arize', number: '113', weight: 'AI', category: 'observability', tier: 'commercial', tags: ['popular'], row: 5, col: 14 },
+            { symbol: 'Wl', name: 'WhyLabs', number: '114', weight: 'ML', category: 'observability', tier: 'commercial', tags: [], row: 5, col: 15 },
+            { symbol: 'Ev', name: 'Evidently', number: '115', weight: 'AI', category: 'observability', tier: 'commercial', tags: [], row: 5, col: 16 },
+            { symbol: 'Gl', name: 'Galileo', number: '116', weight: 'LLM', category: 'observability', tier: 'commercial', tags: [], row: 5, col: 17 },
+            
+            // NLP Tools (Open Source) - Row 1, cols 16-18
+            { symbol: 'Sp', name: 'spaCy', number: '117', weight: '3.7', category: 'nlp', tier: 'opensource', tags: ['popular'], row: 1, col: 16 },
+            { symbol: 'Wh', name: 'Whisper', number: '118', weight: 'OAI', category: 'nlp', tier: 'opensource', tags: ['popular'], row: 1, col: 17 },
+            { symbol: 'Hg', name: 'HuggingFace', number: '119', weight: 'Trans', category: 'nlp', tier: 'opensource', tags: ['popular'], row: 1, col: 18 },
+        ];
+
+        function createPeriodicTable() {
+            const table = document.getElementById('periodicTable');
+            
+            // Create a 12x18 grid
+            for (let row = 1; row <= 12; row++) {
+                for (let col = 1; col <= 18; col++) {
+                    const cell = document.createElement('div');
+                    
+                    // Find element at this position
+                    const element = elements.find(e => e.row === row && e.col === col);
+                    
+                    if (element) {
+                        cell.className = `element ${element.category} ${element.tier}`;
+                        if (element.tags.includes('new')) cell.classList.add('new');
+                        if (element.tags.includes('popular')) cell.classList.add('popular');
+                        
+                        cell.innerHTML = `
+                            <span class="element-number">${element.number}</span>
+                            <div class="element-symbol">${element.symbol}</div>
+                            <div class="element-name">${element.name}</div>
+                            <span class="element-weight">${element.weight}</span>
+                        `;
+                        
+                        cell.addEventListener('mouseenter', (e) => showTooltip(e, element));
+                        cell.addEventListener('mouseleave', hideTooltip);
+                    } else {
+                        cell.className = 'empty';
+                    }
+                    
+                    cell.style.gridRow = row;
+                    cell.style.gridColumn = col;
+                    table.appendChild(cell);
+                }
+            }
+        }
+
+        function showTooltip(event, element) {
+            const tooltip = document.getElementById('tooltip');
+            const rect = event.target.getBoundingClientRect();
+            
+            tooltip.querySelector('.tooltip-title').textContent = element.name;
+            tooltip.querySelector('.tooltip-info').innerHTML = `
+                <div>Symbol: ${element.symbol}</div>
+                <div>Number: ${element.number}</div>
+                <div>Weight: ${element.weight}</div>
+                <div>Category: ${element.category.charAt(0).toUpperCase() + element.category.slice(1)}</div>
+                <div>Tier: ${element.tier.charAt(0).toUpperCase() + element.tier.slice(1)}</div>
+                ${element.tags.length > 0 ? `<div>Tags: ${element.tags.join(', ')}</div>` : ''}
+            `;
+            
+            // Position tooltip
+            let left = rect.left;
+            let top = rect.bottom + 5;
+            
+            if (left + 250 > window.innerWidth) {
+                left = window.innerWidth - 260;
+            }
+            
+            if (top + 150 > window.innerHeight) {
+                top = rect.top - 150;
+            }
+            
+            tooltip.style.left = left + 'px';
+            tooltip.style.top = top + 'px';
+            
+            tooltip.classList.add('show');
+        }
+
+        function hideTooltip() {
+            const tooltip = document.getElementById('tooltip');
+            tooltip.classList.remove('show');
+        }
+
+        // Initialize the table
+        createPeriodicTable();
+    </script>
+</body>
+</html>

@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Architecture Diagram</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+            color: #e0e0e0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header h1 {
+            color: #4db8ff;
+            font-size: 2em;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(77, 184, 255, 0.5);
+        }
+        
+        .architecture {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .layer {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(77, 184, 255, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .layer:hover {
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(77, 184, 255, 0.2);
+        }
+        
+        .layer-title {
+            color: #ffd700;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .components {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .component {
+            background: linear-gradient(135deg, rgba(77, 184, 255, 0.1) 0%, rgba(255, 215, 0, 0.1) 100%);
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            border-radius: 8px;
+            padding: 15px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .component::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .component:hover::before {
+            opacity: 1;
+        }
+        
+        .component:hover {
+            transform: scale(1.05);
+            border-color: #ffd700;
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3);
+        }
+        
+        .component-name {
+            color: #4db8ff;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+        
+        .component-desc {
+            font-size: 0.9em;
+            color: #b0b0b0;
+            line-height: 1.4;
+        }
+        
+        .flow-indicator {
+            text-align: center;
+            font-size: 2em;
+            color: #4db8ff;
+            margin: 10px 0;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+        
+        .warning-box {
+            background: rgba(255, 87, 34, 0.1);
+            border: 1px solid rgba(255, 87, 34, 0.5);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .warning-title {
+            color: #ff5722;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .benefit-box {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid rgba(76, 175, 80, 0.5);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .benefit-title {
+            color: #4caf50;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .icon {
+            width: 24px;
+            height: 24px;
+            display: inline-block;
+        }
+        
+        .data-flow {
+            position: relative;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .data-flow::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            right: 10%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #4db8ff, transparent);
+            animation: flow 3s linear infinite;
+        }
+        
+        @keyframes flow {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .tag {
+            display: inline-block;
+            background: rgba(77, 184, 255, 0.2);
+            border: 1px solid #4db8ff;
+            border-radius: 20px;
+            padding: 5px 12px;
+            font-size: 0.85em;
+            margin: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1> AI System Architecture</h1>
+            <p>Open-Source Event-Driven Architecture with Context Memory & Complex Event Processing</p>
+        </div>
+        
+        <div class="architecture">
+            <!-- Orchestration Layer -->
+            <div class="layer">
+                <div class="layer-title">
+                    <span class="icon"></span>
+                    Service Orchestration Layer
+                </div>
+                <div class="components">
+                    <div class="component">
+                        <div class="component-name">API Gateway</div>
+                        <div class="component-desc">Request routing, rate limiting, authentication</div>
+                    </div>
+                    <div class="component">
+                        <div class="component-name">Service Mesh</div>
+                        <div class="component-desc">Service discovery, load balancing, circuit breaking</div>
+                    </div>
+                    <div class="component">
+                        <div class="component-name">Workflow Engine</div>
+                        <div class="component-desc">BPMN/State machine orchestration</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flow-indicator"></div>
+            
+            <!-- Message Bus & CEP Layer -->
+            <div class="layer">
+                <div class="layer-title">
+                    <span class="icon"></span>
+                    Message Bus & Complex Event Processing
+                </div>
+                <div class="components">
+                    <div class="component">
+                        <div class="component-name">Message Broker</div>
+                        <div class="component-desc">Apache Kafka / RabbitMQ / NATS<br/>
+                        <span class="tag">Pub/Sub</span>
+                        <span class="tag">Event Streaming</span></div>
+                    </div>
+                    <div class="component">
+                        <div class="component-name">CEP Engine</div>
+                        <div class="component-desc">Apache Flink / Spark Streaming<br/>
+                        <span class="tag">Pattern Detection</span>
+                        <span class="tag">Real-time Analytics</span></div>
+                    </div>
+                    <div class="component">
+                        <div class="component-name">Event Store</div>
+                        <div class="component-desc">Event sourcing & CQRS patterns<br/>
+                        <span class="tag">Audit Trail</span>
+                        <span class="tag">Replay</span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flow-indicator">⇩</div>
+            
+            <!-- AI Agent Layer -->
+            <div class="layer">
+                <div class="layer-title">
+                    <span class="icon"></span>
+                    AI Agent Processing Layer
+                </div>
+                <div class="components">
+                    <div class="component">
+                        <div class="component-name">LLM Gateway</div>
+                        <div class="component-desc">Model routing, prompt management, response caching</div>
+                    </div>
+                    <div class="component">
+                        <div class="component-name">Agent Coordinator</div>
+                        <div class="component-desc">Multi-agent orchestration, task delegation</div>
+                    </div>
+                    <div class="component">
+                        <div class="component-name">Tool Registry</div>
+                        <div class="component-desc">Function calling, API integrations, tool selection</div>
+                    </div>
+                    <div class="component">
+                        <div class="component-name">Reasoning Engine</div>
+                        <div class="component-desc">Chain-of-thought, tree-of-thought processing</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flow-indicator">⇩</div>
+            
+            <!-- Context Memory Layer -->
+            <div class="layer">
+                <div class="layer-title">
+                    <span class="icon"></span>
+                    Polyglot Persistence - Context Memory Layer
+                </div>
+                <div class="components">
+                    <div class="component">
+                        <div class="component-name">Vector Database</div>
+                        <div class="component-desc">Semantic memory (Pinecone/Weaviate/Milvus)<br/>
+                        <span class="tag">Embeddings</span>
+                        <span class="tag">Similarity Search</span></div>
+                    </div>
+                    <div class="component">
+                        <div class="component-name">Graph Database</div>
+                        <div class="component-desc">Relationship context (Neo4j/ArangoDB)<br/>
+                        <span class="tag">Knowledge Graph</span>
+                        <span class="tag">Entity Relations</span></div>
+                    </div>
+                    <div class="component">
+                        <div class="component-name">Document Store</div>
+                        <div class="component-desc">Conversation history (MongoDB/Elasticsearch)<br/>
+                        <span class="tag">Full-text Search</span>
+                        <span class="tag">JSON Documents</span></div>
+                    </div>
+                    <div class="component">
+                        <div class="component-name">Time-Series DB</div>
+                        <div class="component-desc">Temporal context (InfluxDB/TimescaleDB)<br/>
+                        <span class="tag">Metrics</span>
+                        <span class="tag">Event Timeline</span></div>
+                    </div>
+                    <div class="component">
+                        <div class="component-name">Key-Value Cache</div>
+                        <div class="component-desc">Session state (Redis/Memcached)<br/>
+                        <span class="tag">Fast Access</span>
+                        <span class="tag">TTL Management</span></div>
+                    </div>
+                    <div class="component">
+                        <div class="component-name">Object Storage</div>
+                        <div class="component-desc">Media & artifacts (MinIO/S3-compatible)<br/>
+                        <span class="tag">Binary Data</span>
+                        <span class="tag">CDN Integration</span></div>
+                    </div>
+                </div>
+                
+                <div class="warning-box">
+                    <div class="warning-title">
+                        <span class="icon">⚠️</span>
+                        Security & Privacy Considerations
+                    </div>
+                    <ul>
+                        <li><strong>Data Encryption:</strong> All context memory must be encrypted at rest and in transit</li>
+                        <li><strong>Access Control:</strong> Fine-grained RBAC/ABAC for memory access patterns</li>
+                        <li><strong>Data Retention:</strong> Automated TTL and GDPR-compliant data lifecycle management</li>
+                        <li><strong>Memory Isolation:</strong> Tenant/user-level isolation to prevent context leakage</li>
+                        <li><strong>Audit Logging:</strong> Complete audit trail of all memory access and modifications</li>
+                        <li><strong>PII Detection:</strong> Automated scanning and masking of sensitive information</li>
+                    </ul>
+                </div>
+                
+                <div class="benefit-box">
+                    <div class="benefit-title">
+                        <span class="icon"></span>
+                        Stateful Benefits for Advanced AI
+                    </div>
+                    <ul>
+                        <li><strong>Contextual Understanding:</strong> Maintains conversation continuity and user preferences</li>
+                        <li><strong>Learning & Adaptation:</strong> Enables personalization and improved responses over time</li>
+                        <li><strong>Complex Reasoning:</strong> Supports multi-step reasoning with intermediate state storage</li>
+                        <li><strong>Performance:</strong> Reduces redundant processing through intelligent caching</li>
+                        <li><strong>Note:</strong> While this makes the architecture partially stateful (moving away from pure stateless design), the benefits for AI capabilities are substantial and necessary for advanced use cases</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="flow-indicator">⇩</div>
+            
+            <!-- Observability Layer -->
+            <div class="layer">
+                <div class="layer-title">
+                    <span class="icon"></span>
+                    Observability & Monitoring
+                </div>
+                <div class="components">
+                    <div class="component">
+                        <div class="component-name">Metrics Collection</div>
+                        <div class="component-desc">Prometheus / OpenTelemetry</div>
+                    </div>
+                    <div class="component">
+                        <div class="component-name">Distributed Tracing</div>
+                        <div class="component-desc">Jaeger / Zipkin</div>
+                    </div>
+                    <div class="component">
+                        <div class="component-name">Log Aggregation</div>
+                        <div class="component-desc">ELK Stack / Loki</div>
+                    </div>
+                    <div class="component">
+                        <div class="component-name">Dashboards</div>
+                        <div class="component-desc">Grafana / Kibana</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Add interactive hover effects
+        document.querySelectorAll('.component').forEach(comp => {
+            comp.addEventListener('mouseenter', function() {
+                this.style.zIndex = '10';
+            });
+            comp.addEventListener('mouseleave', function() {
+                this.style.zIndex = '1';
+            });
+        });
+        
+        // Add click to expand functionality
+        document.querySelectorAll('.layer').forEach(layer => {
+            layer.style.cursor = 'pointer';
+            layer.addEventListener('click', function(e) {
+                if (e.target === this || e.target.classList.contains('layer-title')) {
+                    this.classList.toggle('expanded');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

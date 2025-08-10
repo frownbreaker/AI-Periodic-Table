@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mathematical Family Tree of AI - 3D Visualization</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        // Global functions for buttons
+        window.expandAll = expandAll;
+        window.collapseToCore = collapseToCore;
+        window.showLLMPath = showLLMPath;
+        window.toggleRotation = toggleRotation;
+        window.resetCamera = resetCamera;
+        window.focusOnLLMs = focusOnLLMs;
+        window.animateEvolution = animateEvolution;
+        window.toggleLabels = toggleLabels;
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef, #f1f3f5);
+            overflow: hidden;
+            color: #212529;
+        }
+
+        #canvas {
+            width: 100vw;
+            height: 100vh;
+            display: block;
+        }
+
+        .controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid #dee2e6;
+            max-width: 280px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 1.4em;
+            margin-bottom: 10px;
+            color: #000000;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 0.85em;
+            color: #495057;
+            margin-bottom: 20px;
+            line-height: 1.4;
+            font-weight: 400;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 6px 0;
+            background: #212529;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        button:hover {
+            background: #495057;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .info {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            font-size: 13px;
+            max-width: 300px;
+            border: 1px solid #dee2e6;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            font-size: 12px;
+            border: 1px solid #dee2e6;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            color: #212529;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+        }
+
+        .tooltip {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.98);
+            color: #000000;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            pointer-events: none;
+            z-index: 1000;
+            display: none;
+            border: 1px solid #dee2e6;
+            max-width: 300px;
+            line-height: 1.5;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .node-detail {
+            color: #495057;
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        .stats {
+            color: #495057;
+            margin-top: 15px;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+    <div class="controls">
+        <h1>Mathematical Genealogy of AI</h1>
+        <div class="subtitle">From Statistics & Calculus to LLMs as Convex Polytopes in ℝⁿ</div>
+        <button onclick="expandAll()">Expand Full Tree</button>
+        <button onclick="collapseToCore()">Show Core Only</button>
+        <button onclick="showLLMPath()">Trace LLM Lineage</button>
+        <button onclick="toggleRotation()">Toggle Auto-Rotate</button>
+        <button onclick="resetCamera()">Reset Camera</button>
+        <button onclick="focusOnLLMs()">Focus on LLMs</button>
+        <button onclick="animateEvolution()">Animate Evolution</button>
+        <button onclick="toggleLabels()">Toggle Labels</button>
+    </div>
+    
+    <div class="legend">
+        <div style="font-weight: bold; margin-bottom: 10px; color: #000000;">Mathematical Domains</div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #c41e3a;"></div>
+            <span>Foundations</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #2e7d32;"></div>
+            <span>Classical Methods</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #1565c0;"></div>
+            <span>Machine Learning</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #6a1b9a;"></div>
+            <span>Deep Learning</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #ff6f00;"></div>
+            <span>Transformers/LLMs</span>
+        </div>
+    </div>
+    
+    <div class="info">
+        <div style="font-weight: bold; margin-bottom: 10px; color: #000000;">Visualization Info</div>
+        <div class="stats">
+            <div>Nodes: <span id="nodeCount">0</span></div>
+            <div>Edges: <span id="edgeCount">0</span></div>
+            <div>Depth: <span id="treeDepth">0</span> levels</div>
+            <div style="margin-top: 10px; color: #000000;">
+                <strong>Navigation:</strong><br>
+                • Right-click + drag: Orbit<br>
+                • Scroll: Zoom<br>
+                • Click node: View details<br>
+                • Double-click: Focus<br>
+                • Toggle Labels: Show/hide text
+            </div>
+        </div>
+    </div>
+    
+    <div class="tooltip" id="tooltip"></div>
+    <canvas id="canvas"></canvas>
+
+    <script>
+        // Scene setup
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xf8f9fa);
+        scene.fog = new THREE.Fog(0xf8f9fa, 150, 400);
+        
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 30, 80);
+        camera.lookAt(0, 0, 0);
+        
+        const renderer = new THREE.WebGLRenderer({ 
+            canvas: document.getElementById('canvas'),
+            antialias: true,
+            alpha: false
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.2;
+        
+        // Professional lighting setup
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+        
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.4);
+        directionalLight.position.set(50, 100, 50);
+        directionalLight.castShadow = true;
+        directionalLight.shadow.mapSize.width = 2048;
+        directionalLight.shadow.mapSize.height = 2048;
+        scene.add(directionalLight);
+        
+        const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.2);
+        directionalLight2.position.set(-50, 50, -50);
+        scene.add(directionalLight2);
+        
+        const pointLight1 = new THREE.PointLight(0xffffff, 0.3, 150);
+        pointLight1.position.set(0, 50, 0);
+        scene.add(pointLight1);
+
+        // Mathematical Family Tree Data Structure
+        const mathTree = {
+            nodes: [
+                // Root
+                { id: 'math', label: 'Mathematics', level: 0, color: 0xc41e3a, 
+                  description: 'The foundation of all AI: Pure Mathematics' },
+                
+                // Level 1: Core Foundations
+                { id: 'stats', label: 'Statistics', level: 1, color: 0xdc143c, parent: 'math',
+                  description: 'Statistical theory: distributions, hypothesis testing, estimation' },
+                { id: 'calculus', label: 'Differential Calculus', level: 1, color: 0xdc143c, parent: 'math',
+                  description: 'Derivatives, gradients, and rate of change' },
+                { id: 'linalg', label: 'Linear Algebra', level: 1, color: 0xdc143c, parent: 'math',
+                  description: 'Vector spaces, matrices, and linear transformations' },
+                { id: 'discrete', label: 'Discrete Mathematics', level: 1, color: 0xdc143c, parent: 'math',
+                  description: 'Combinatorics, graph theory, and logic' },
+                
+                // Level 2: Statistical Branches
+                { id: 'regression', label: 'Regression Analysis', level: 2, color: 0x2e7d32, parent: 'stats',
+                  description: 'Linear/nonlinear regression, GLMs, regularization' },
+                { id: 'probability', label: 'Probability Theory', level: 2, color: 0x2e7d32, parent: 'stats',
+                  description: 'Random variables, distributions, stochastic processes' },
+                { id: 'bayesian', label: 'Bayesian Methods', level: 2, color: 0x2e7d32, parent: 'stats',
+                  description: 'Bayesian inference, priors, posteriors, MCMC' },
+                { id: 'timeseries', label: 'Time Series Analysis', level: 2, color: 0x2e7d32, parent: 'stats',
+                  description: 'ARIMA, state space models, forecasting' },
+                
+                // Level 2: Calculus Branches
+                { id: 'optimization', label: 'Optimization Theory', level: 2, color: 0x2e7d32, parent: 'calculus',
+                  description: 'Convex optimization, Lagrangian methods, KKT conditions' },
+                { id: 'multicalc', label: 'Multivariate Calculus', level: 2, color: 0x2e7d32, parent: 'calculus',
+                  description: 'Partial derivatives, Jacobians, Hessians' },
+                { id: 'ode', label: 'Differential Equations', level: 2, color: 0x2e7d32, parent: 'calculus',
+                  description: 'ODEs, PDEs, dynamical systems' },
+                { id: 'varicalc', label: 'Variational Calculus', level: 2, color: 0x2e7d32, parent: 'calculus',
+                  description: 'Functionals, Euler-Lagrange equations' },
+                
+                // Level 2: Linear Algebra Branches
+                { id: 'matrix', label: 'Matrix Theory', level: 2, color: 0x2e7d32, parent: 'linalg',
+                  description: 'Matrix decompositions, eigenvalues, SVD' },
+                { id: 'tensor', label: 'Tensor Algebra', level: 2, color: 0x2e7d32, parent: 'linalg',
+                  description: 'Tensor products, multilinear maps, Einstein notation' },
+                { id: 'numerical', label: 'Numerical Linear Algebra', level: 2, color: 0x2e7d32, parent: 'linalg',
+                  description: 'Iterative methods, conditioning, stability' },
+                { id: 'spectral', label: 'Spectral Theory', level: 2, color: 0x2e7d32, parent: 'linalg',
+                  description: 'Eigenspaces, spectral decomposition, graph spectra' },
+                
+                // Level 2: Discrete Math Branches
+                { id: 'graphtheory', label: 'Graph Theory', level: 2, color: 0x2e7d32, parent: 'discrete',
+                  description: 'Networks, adjacency matrices, spectral graph theory' },
+                { id: 'information', label: 'Information Theory', level: 2, color: 0x2e7d32, parent: 'discrete',
+                  description: 'Entropy, mutual information, KL divergence' },
+                { id: 'complexity', label: 'Computational Complexity', level: 2, color: 0x2e7d32, parent: 'discrete',
+                  description: 'P vs NP, approximation algorithms, PAC learning' },
+                
+                // Level 3: Machine Learning Foundations
+                { id: 'statlearn', label: 'Statistical Learning', level: 3, color: 0x1565c0, parent: 'regression',
+                  description: 'Bias-variance tradeoff, VC dimension, regularization' },
+                { id: 'kernel', label: 'Kernel Methods', level: 3, color: 0x1565c0, parent: 'matrix',
+                  description: 'RKHS, kernel trick, Mercer theorem' },
+                { id: 'convexopt', label: 'Convex Analysis', level: 3, color: 0x1565c0, parent: 'optimization',
+                  description: 'Convex sets, convex functions, duality theory' },
+                { id: 'manifold', label: 'Manifold Learning', level: 3, color: 0x1565c0, parent: 'spectral',
+                  description: 'Riemannian geometry, geodesics, tangent spaces' },
+                { id: 'approx', label: 'Approximation Theory', level: 3, color: 0x1565c0, parent: 'numerical',
+                  description: 'Universal approximation, basis functions, splines' },
+                { id: 'stochastic', label: 'Stochastic Processes', level: 3, color: 0x1565c0, parent: 'probability',
+                  description: 'Markov chains, Brownian motion, martingales' },
+                
+                // Level 4: Classical ML
+                { id: 'svm', label: 'Support Vector Machines', level: 4, color: 0x0d47a1, parent: 'kernel',
+                  description: 'Maximum margin classifiers, dual formulation' },
+                { id: 'ensemble', label: 'Ensemble Methods', level: 4, color: 0x0d47a1, parent: 'statlearn',
+                  description: 'Boosting, bagging, random forests' },
+                { id: 'graphical', label: 'Graphical Models', level: 4, color: 0x0d47a1, parent: 'bayesian',
+                  description: 'Bayesian networks, MRFs, CRFs, belief propagation' },
+                { id: 'dimred', label: 'Dimensionality Reduction', level: 4, color: 0x0d47a1, parent: 'manifold',
+                  description: 'PCA, LDA, t-SNE, UMAP, autoencoders' },
+                
+                // Level 5: Neural Network Foundations
+                { id: 'perceptron', label: 'Perceptron Theory', level: 5, color: 0x4a148c, parent: 'statlearn',
+                  description: 'Linear separability, perceptron convergence theorem' },
+                { id: 'backprop', label: 'Backpropagation', level: 5, color: 0x4a148c, parent: 'multicalc',
+                  description: 'Chain rule, automatic differentiation, gradient flow' },
+                { id: 'universal', label: 'Universal Approximation', level: 5, color: 0x4a148c, parent: 'approx',
+                  description: 'Cybenko theorem, depth vs width, approximation bounds' },
+                { id: 'sgd', label: 'Stochastic Gradient Descent', level: 5, color: 0x4a148c, parent: 'convexopt',
+                  description: 'Convergence theory, momentum, adaptive methods' },
+                
+                // Level 6: Deep Learning Theory
+                { id: 'deepnets', label: 'Deep Neural Networks', level: 6, color: 0x6a1b9a, parent: 'backprop',
+                  description: 'Depth efficiency, lottery ticket hypothesis' },
+                { id: 'cnn', label: 'Convolutional Networks', level: 6, color: 0x6a1b9a, parent: 'deepnets',
+                  description: 'Convolution theorem, translation equivariance' },
+                { id: 'rnn', label: 'Recurrent Networks', level: 6, color: 0x6a1b9a, parent: 'deepnets',
+                  description: 'Temporal dynamics, BPTT, vanishing gradients' },
+                { id: 'regularization', label: 'Regularization Theory', level: 6, color: 0x6a1b9a, parent: 'sgd',
+                  description: 'Dropout, batch norm, weight decay, implicit regularization' },
+                { id: 'representation', label: 'Representation Learning', level: 6, color: 0x6a1b9a, parent: 'universal',
+                  description: 'Feature learning, disentanglement, compositionality' },
+                
+                // Level 7: Modern Deep Learning
+                { id: 'attention', label: 'Attention Mechanisms', level: 7, color: 0x7b1fa2, parent: 'rnn',
+                  description: 'Scaled dot-product attention, multi-head attention' },
+                { id: 'normalization', label: 'Normalization Layers', level: 7, color: 0x7b1fa2, parent: 'regularization',
+                  description: 'Layer norm, group norm, spectral normalization' },
+                { id: 'optimization_modern', label: 'Modern Optimizers', level: 7, color: 0x7b1fa2, parent: 'sgd',
+                  description: 'Adam, RMSprop, AdamW, LAMB, learning rate schedules' },
+                { id: 'geometric', label: 'Geometric Deep Learning', level: 7, color: 0x7b1fa2, parent: 'manifold',
+                  description: 'Graph neural networks, equivariant networks' },
+                
+                // Level 8: Transformer Architecture
+                { id: 'transformer', label: 'Transformer Architecture', level: 8, color: 0xe65100, parent: 'attention',
+                  description: 'Self-attention, positional encoding, FFN blocks' },
+                { id: 'embedding', label: 'Embedding Theory', level: 8, color: 0xe65100, parent: 'representation',
+                  description: 'Token embeddings, position embeddings, semantic spaces' },
+                { id: 'scaling', label: 'Scaling Laws', level: 8, color: 0xe65100, parent: 'deepnets',
+                  description: 'Chinchilla scaling, compute-optimal training' },
+                
+                // Level 9: LLM Foundations
+                { id: 'autoregressive', label: 'Autoregressive Models', level: 9, color: 0xef6c00, parent: 'transformer',
+                  description: 'Causal masking, next-token prediction, perplexity' },
+                { id: 'pretraining', label: 'Self-Supervised Learning', level: 9, color: 0xef6c00, parent: 'embedding',
+                  description: 'Masked language modeling, contrastive learning' },
+                { id: 'finetuning', label: 'Transfer Learning', level: 9, color: 0xef6c00, parent: 'pretraining',
+                  description: 'Task adaptation, instruction tuning, RLHF' },
+                { id: 'emergence', label: 'Emergent Abilities', level: 9, color: 0xef6c00, parent: 'scaling',
+                  description: 'Phase transitions, few-shot learning, chain-of-thought' },
+                
+                // Level 10: LLMs as Mathematical Objects
+                { id: 'llm_geometry', label: 'LLM Geometry', level: 10, color: 0xff6f00, parent: 'autoregressive',
+                  description: 'High-dimensional manifolds, attention polytopes' },
+                { id: 'tokenspace', label: 'Token Space Topology', level: 10, color: 0xff6f00, parent: 'embedding',
+                  description: 'Semantic neighborhoods, metric structure of embeddings' },
+                { id: 'polytope', label: 'Convex Polytopes in ℝⁿ', level: 10, color: 0xff8f00, parent: 'llm_geometry',
+                  description: 'LLMs as convex polytopes in n-dimensional space: attention weights form simplices, layer outputs lie in convex hulls' },
+                { id: 'measure', label: 'Probability Measures', level: 10, color: 0xff8f00, parent: 'polytope',
+                  description: 'Softmax defines probability simplices, KL geometry' },
+                { id: 'dynamics', label: 'Dynamical Systems View', level: 10, color: 0xff8f00, parent: 'emergence',
+                  description: 'Transformer layers as discrete dynamical systems, fixed points' }
+            ],
+            edges: []
+        };
+        
+        // Build edges from parent relationships
+        mathTree.nodes.forEach(node => {
+            if (node.parent) {
+                mathTree.edges.push({ source: node.parent, target: node.id });
+            }
+        });
+        
+        // Update stats
+        document.getElementById('nodeCount').textContent = mathTree.nodes.length;
+        document.getElementById('edgeCount').textContent = mathTree.edges.length;
+        document.getElementById('treeDepth').textContent = Math.max(...mathTree.nodes.map(n => n.level)) + 1;
+        
+        // Storage for Three.js objects
+        const nodeObjects = {};
+        const edgeObjects = [];
+        const nodePositions = {};
+        const labelSprites = {};
+        let autoRotate = true;
+        
+        // Create text sprite for labels
+        function createTextSprite(text, fontSize = 48) {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            
+            // Set canvas size
+            canvas.width = 512;
+            canvas.height = 128;
+            
+            // Configure text with black color
+            context.font = `bold ${fontSize}px 'Inter', 'Helvetica Neue', Arial, sans-serif`;
+            context.fillStyle = '#000000';
+            context.textAlign = 'center';
+            context.textBaseline = 'middle';
+            
+            // White background for better contrast
+            context.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Black text
+            context.fillStyle = '#000000';
+            
+            // Handle long text by wrapping or shrinking
+            let displayText = text;
+            if (text.length > 20) {
+                context.font = `bold ${fontSize * 0.8}px 'Inter', 'Helvetica Neue', Arial, sans-serif`;
+                displayText = text.length > 25 ? text.substring(0, 22) + '...' : text;
+            }
+            
+            // Draw text
+            context.fillText(displayText, canvas.width / 2, canvas.height / 2);
+            
+            // Create texture and sprite
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.needsUpdate = true;
+            
+            const spriteMaterial = new THREE.SpriteMaterial({
+                map: texture,
+                transparent: true,
+                opacity: 0.95
+            });
+            
+            const sprite = new THREE.Sprite(spriteMaterial);
+            sprite.scale.set(8, 2, 1);
+            
+            return sprite;
+        }
+        
+        // Create enhanced sphere nodes with labels
+        function createNode(nodeData) {
+            const group = new THREE.Group();
+            
+            // Main sphere
+            const radius = Math.max(0.8, 3 - nodeData.level * 0.25);
+            const geometry = new THREE.SphereGeometry(radius, 32, 32);
+            
+            const material = new THREE.MeshPhongMaterial({
+                color: nodeData.color,
+                emissive: nodeData.color,
+                emissiveIntensity: 0.1,
+                shininess: 30,
+                specular: 0x333333
+            });
+            
+            const sphere = new THREE.Mesh(geometry, material);
+            sphere.castShadow = true;
+            sphere.receiveShadow = true;
+            group.add(sphere);
+            
+            // Subtle glow
+            const glowGeometry = new THREE.SphereGeometry(radius * 1.2, 16, 16);
+            const glowMaterial = new THREE.MeshBasicMaterial({
+                color: nodeData.color,
+                transparent: true,
+                opacity: 0.05
+            });
+            const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+            group.add(glow);
+            
+            // Add rings for special nodes
+            if (nodeData.id === 'polytope' || nodeData.id === 'llm_geometry') {
+                const ringGeometry = new THREE.TorusGeometry(radius * 1.5, 0.1, 8, 32);
+                const ringMaterial = new THREE.MeshBasicMaterial({
+                    color: 0xffa000,
+                    transparent: true,
+                    opacity: 0.8
+                });
+                const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+                ring.rotation.x = Math.PI / 2;
+                group.add(ring);
+            }
+            
+            // Add text label with appropriate font size
+            const fontSize = nodeData.level === 0 ? 56 : 
+                           nodeData.level <= 2 ? 48 : 
+                           nodeData.level <= 5 ? 44 : 40;
+            
+            const label = createTextSprite(nodeData.label, fontSize);
+            label.position.y = radius + 2.5;
+            group.add(label);
+            
+            // Store label reference
+            labelSprites[nodeData.id] = label;
+            
+            group.userData = nodeData;
+            return group;
+        }
+        
+        // Create gradient edges
+        function createEdge(source, target) {
+            const points = [
+                new THREE.Vector3(0, 0, 0),
+                new THREE.Vector3(1, 1, 1)
+            ];
+            
+            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+            
+            // Professional dark gray lines
+            const material = new THREE.LineBasicMaterial({
+                color: 0x495057,
+                transparent: true,
+                opacity: 0.4,
+                linewidth: 2
+            });
+            
+            const line = new THREE.Line(geometry, material);
+            line.userData = { source, target };
+            
+            return line;
+        }
+        
+        // Hierarchical positioning
+        function positionNodes() {
+            const levels = {};
+            const levelRadii = [0, 15, 25, 35, 45, 55, 65, 75, 85, 95, 105];
+            
+            // Group by level
+            mathTree.nodes.forEach(node => {
+                if (!levels[node.level]) levels[node.level] = [];
+                levels[node.level].push(node);
+            });
+            
+            // Position based on hierarchy
+            Object.keys(levels).forEach(level => {
+                const levelNodes = levels[level];
+                const numNodes = levelNodes.length;
+                const radius = levelRadii[parseInt(level)] || parseInt(level) * 12;
+                
+                levelNodes.forEach((node, index) => {
+                    // Special positioning for root
+                    if (node.id === 'math') {
+                        nodePositions[node.id] = { x: 0, y: 0, z: 0 };
+                        return;
+                    }
+                    
+                    // Find parent position for better clustering
+                    let parentPos = { x: 0, y: 0, z: 0 };
+                    if (node.parent && nodePositions[node.parent]) {
+                        parentPos = nodePositions[node.parent];
+                    }
+                    
+                    // Angular positioning with parent influence
+                    const angleOffset = node.parent ? 
+                        (mathTree.nodes.findIndex(n => n.id === node.parent) * 0.5) : 0;
+                    const angle = (index / numNodes) * Math.PI * 2 + angleOffset;
+                    
+                    const x = radius * Math.cos(angle) + parentPos.x * 0.2;
+                    const y = -level * 8; // Vertical spacing
+                    const z = radius * Math.sin(angle) + parentPos.z * 0.2;
+                    
+                    nodePositions[node.id] = { x, y, z };
+                });
+            });
+        }
+        
+        // Initialize the mathematical tree
+        function initGraph() {
+            // Create all nodes
+            mathTree.nodes.forEach(node => {
+                const nodeObject = createNode(node);
+                nodeObject.position.set(
+                    Math.random() * 40 - 20,
+                    Math.random() * 40 - 20,
+                    Math.random() * 40 - 20
+                );
+                nodeObjects[node.id] = nodeObject;
+                scene.add(nodeObject);
+            });
+            
+            // Create edges
+            mathTree.edges.forEach(edge => {
+                const edgeObject = createEdge(edge.source, edge.target);
+                edgeObjects.push(edgeObject);
+                scene.add(edgeObject);
+            });
+            
+            // Position properly
+            positionNodes();
+            animateNodePositions();
+        }
+        
+        // Smooth animation to positions
+        function animateNodePositions() {
+            mathTree.nodes.forEach(node => {
+                const nodeObject = nodeObjects[node.id];
+                const targetPos = nodePositions[node.id];
+                
+                if (nodeObject && targetPos) {
+                    const startPos = {
+                        x: nodeObject.position.x,
+                        y: nodeObject.position.y,
+                        z: nodeObject.position.z
+                    };
+                    
+                    let progress = 0;
+                    const animate = () => {
+                        progress += 0.015;
+                        if (progress <= 1) {
+                            const eased = easeInOutCubic(progress);
+                            nodeObject.position.x = startPos.x + (targetPos.x - startPos.x) * eased;
+                            nodeObject.position.y = startPos.y + (targetPos.y - startPos.y) * eased;
+                            nodeObject.position.z = startPos.z + (targetPos.z - startPos.z) * eased;
+                            requestAnimationFrame(animate);
+                        }
+                    };
+                    animate();
+                }
+            });
+        }
+        
+        function easeInOutCubic(t) {
+            return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        }
+        
+        // Update edge positions
+        function updateEdges() {
+            edgeObjects.forEach(edge => {
+                const source = nodeObjects[edge.userData.source];
+                const target = nodeObjects[edge.userData.target];
+                
+                if (source && target) {
+                    const positions = edge.geometry.attributes.position;
+                    positions.setXYZ(0, source.position.x, source.position.y, source.position.z);
+                    positions.setXYZ(1, target.position.x, target.position.y, target.position.z);
+                    positions.needsUpdate = true;
+                }
+            });
+        }
+        
+        // Mouse interaction
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        let hoveredNode = null;
+        
+        function onMouseMove(event) {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(Object.values(nodeObjects), true);
+            
+            // Reset previous hover
+            if (hoveredNode) {
+                hoveredNode.scale.set(1, 1, 1);
+                hoveredNode = null;
+            }
+            
+            if (intersects.length > 0) {
+                const object = intersects[0].object.parent;
+                hoveredNode = object;
+                object.scale.set(1.3, 1.3, 1.3);
+                
+                // Show detailed tooltip
+                const tooltip = document.getElementById('tooltip');
+                tooltip.style.display = 'block';
+                tooltip.style.left = event.clientX + 15 + 'px';
+                tooltip.style.top = event.clientY - 30 + 'px';
+                tooltip.innerHTML = `
+                    <strong>${object.userData.label}</strong>
+                    <div class="node-detail">${object.userData.description}</div>
+                    <div class="node-detail">Level: ${object.userData.level}</div>
+                `;
+                
+                document.body.style.cursor = 'pointer';
+            } else {
+                document.getElementById('tooltip').style.display = 'none';
+                document.body.style.cursor = 'default';
+            }
+        }
+        
+        function onClick(event) {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(Object.values(nodeObjects), true);
+            
+            if (intersects.length > 0) {
+                const object = intersects[0].object.parent;
+                console.log('Selected:', object.userData);
+                
+                // Highlight path to root
+                highlightPath(object.userData.id);
+            }
+        }
+        
+        function onDoubleClick(event) {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(Object.values(nodeObjects), true);
+            
+            if (intersects.length > 0) {
+                const object = intersects[0].object.parent;
+                focusOnNode(object);
+            }
+        }
+        
+        // Highlight path from node to root
+        function highlightPath(nodeId) {
+            // Reset all edges
+            edgeObjects.forEach(edge => {
+                edge.material.opacity = 0.15;
+                edge.material.color = new THREE.Color(0x495057);
+                edge.material.linewidth = 1;
+            });
+            
+            // Trace path to root
+            let currentId = nodeId;
+            while (currentId) {
+                const node = mathTree.nodes.find(n => n.id === currentId);
+                if (node && node.parent) {
+                    // Highlight edge
+                    const edge = edgeObjects.find(e => 
+                        e.userData.source === node.parent && 
+                        e.userData.target === currentId
+                    );
+                    if (edge) {
+                        edge.material.opacity = 0.9;
+                        edge.material.color = new THREE.Color(0x212529);
+                        edge.material.linewidth = 3;
+                    }
+                    currentId = node.parent;
+                } else {
+                    break;
+                }
+            }
+        }
+        
+        // Focus camera on node
+        function focusOnNode(object) {
+            const targetPos = object.position;
+            const startPos = camera.position.clone();
+            const targetCamPos = new THREE.Vector3(
+                targetPos.x + 20,
+                targetPos.y + 10,
+                targetPos.z + 20
+            );
+            
+            let progress = 0;
+            const animate = () => {
+                progress += 0.02;
+                if (progress <= 1) {
+                    const eased = easeInOutCubic(progress);
+                    camera.position.lerpVectors(startPos, targetCamPos, eased);
+                    camera.lookAt(targetPos);
+                    requestAnimationFrame(animate);
+                }
+            };
+            animate();
+        }
+        
+        // Control functions
+        function expandAll() {
+            positionNodes();
+            animateNodePositions();
+            // Reset edge appearance
+            edgeObjects.forEach(edge => {
+                edge.material.opacity = 0.4;
+                edge.material.color = new THREE.Color(0x495057);
+            });
+        }
+        
+        function collapseToCore() {
+            // Show only first 3 levels
+            mathTree.nodes.forEach(node => {
+                const nodeObject = nodeObjects[node.id];
+                const label = labelSprites[node.id];
+                if (nodeObject) {
+                    nodeObject.visible = node.level <= 2;
+                    if (label) {
+                        label.visible = node.level <= 2 && labelsVisible;
+                    }
+                }
+            });
+            edgeObjects.forEach(edge => {
+                const source = mathTree.nodes.find(n => n.id === edge.userData.source);
+                const target = mathTree.nodes.find(n => n.id === edge.userData.target);
+                edge.visible = source && target && source.level <= 2 && target.level <= 2;
+                if (edge.visible) {
+                    edge.material.opacity = 0.4;
+                    edge.material.color = new THREE.Color(0x495057);
+                }
+            });
+        }
+        
+        function showLLMPath() {
+            // Highlight the path to LLMs
+            highlightPath('polytope');
+            
+            // Dim other nodes
+            mathTree.nodes.forEach(node => {
+                const nodeObject = nodeObjects[node.id];
+                const label = labelSprites[node.id];
+                if (nodeObject) {
+                    const inPath = isInPath(node.id, 'polytope');
+                    nodeObject.children[0].material.opacity = inPath ? 1 : 0.3;
+                    if (label) {
+                        label.material.opacity = inPath ? 0.95 : 0.4;
+                    }
+                }
+            });
+        }
+        
+        function isInPath(nodeId, targetId) {
+            if (nodeId === targetId) return true;
+            let current = targetId;
+            while (current) {
+                if (current === nodeId) return true;
+                const node = mathTree.nodes.find(n => n.id === current);
+                current = node ? node.parent : null;
+            }
+            return false;
+        }
+        
+        function focusOnLLMs() {
+            const llmNode = nodeObjects['polytope'];
+            if (llmNode) {
+                focusOnNode(llmNode);
+            }
+        }
+        
+        function animateEvolution() {
+            let level = 0;
+            const maxLevel = Math.max(...mathTree.nodes.map(n => n.level));
+            
+            // Hide all initially
+            mathTree.nodes.forEach(node => {
+                const nodeObject = nodeObjects[node.id];
+                const label = labelSprites[node.id];
+                if (nodeObject) {
+                    nodeObject.visible = false;
+                    nodeObject.scale.set(0, 0, 0);
+                }
+                if (label) {
+                    label.visible = false;
+                }
+            });
+            edgeObjects.forEach(edge => edge.visible = false);
+            
+            // Reveal level by level
+            const revealLevel = () => {
+                mathTree.nodes.forEach(node => {
+                    if (node.level === level) {
+                        const nodeObject = nodeObjects[node.id];
+                        const label = labelSprites[node.id];
+                        if (nodeObject) {
+                            nodeObject.visible = true;
+                            // Animate scale
+                            let scale = 0;
+                            const animateScale = () => {
+                                scale += 0.05;
+                                if (scale <= 1) {
+                                    nodeObject.scale.set(scale, scale, scale);
+                                    requestAnimationFrame(animateScale);
+                                } else {
+                                    // Show label after node is fully scaled
+                                    if (label && labelsVisible) {
+                                        label.visible = true;
+                                    }
+                                }
+                            };
+                            animateScale();
+                        }
+                    }
+                });
+                
+                // Show edges to this level
+                edgeObjects.forEach(edge => {
+                    const target = mathTree.nodes.find(n => n.id === edge.userData.target);
+                    if (target && target.level <= level) {
+                        edge.visible = true;
+                    }
+                });
+                
+                level++;
+                if (level <= maxLevel) {
+                    setTimeout(revealLevel, 500);
+                }
+            };
+            
+            revealLevel();
+        }
+        
+        function toggleRotation() {
+            autoRotate = !autoRotate;
+        }
+        
+        function resetCamera() {
+            camera.position.set(0, 30, 80);
+            camera.lookAt(0, 0, 0);
+            
+            // Reset all visibilities
+            mathTree.nodes.forEach(node => {
+                const nodeObject = nodeObjects[node.id];
+                const label = labelSprites[node.id];
+                if (nodeObject) {
+                    nodeObject.visible = true;
+                    nodeObject.scale.set(1, 1, 1);
+                    nodeObject.children[0].material.opacity = 1;
+                }
+                if (label) {
+                    label.visible = labelsVisible;
+                }
+            });
+            edgeObjects.forEach(edge => {
+                edge.visible = true;
+                edge.material.opacity = 0.4;
+                edge.material.color = new THREE.Color(0x495057);
+            });
+        }
+        
+        let labelsVisible = true;
+        function toggleLabels() {
+            labelsVisible = !labelsVisible;
+            Object.values(labelSprites).forEach(label => {
+                label.visible = labelsVisible;
+            });
+        }
+        
+        // Camera controls
+        let mouseDown = false;
+        let mouseX = 0;
+        let mouseY = 0;
+        
+        document.addEventListener('mousedown', (e) => {
+            if (e.button === 2) { // Right click
+                mouseDown = true;
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            }
+        });
+        
+        document.addEventListener('mouseup', () => {
+            mouseDown = false;
+        });
+        
+        document.addEventListener('mousemove', (e) => {
+            if (mouseDown) {
+                const deltaX = e.clientX - mouseX;
+                const deltaY = e.clientY - mouseY;
+                
+                const spherical = new THREE.Spherical();
+                spherical.setFromVector3(camera.position);
+                spherical.theta -= deltaX * 0.01;
+                spherical.phi += deltaY * 0.01;
+                spherical.phi = Math.max(0.1, Math.min(Math.PI - 0.1, spherical.phi));
+                
+                camera.position.setFromSpherical(spherical);
+                camera.lookAt(0, -20, 0);
+                
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            }
+        });
+        
+        document.addEventListener('wheel', (e) => {
+            const zoom = e.deltaY > 0 ? 1.1 : 0.9;
+            camera.position.multiplyScalar(zoom);
+        });
+        
+        document.addEventListener('contextmenu', (e) => e.preventDefault());
+        
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+        
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Auto rotate
+            if (autoRotate) {
+                scene.rotation.y += 0.001;
+            }
+            
+            // Update edges
+            updateEdges();
+            
+            // Update labels and nodes
+            mathTree.nodes.forEach((node, i) => {
+                const nodeObject = nodeObjects[node.id];
+                if (nodeObject) {
+                    // Gentle floating
+                    nodeObject.position.y += Math.sin(Date.now() * 0.0005 + i) * 0.005;
+                    
+                    // Rotate special nodes
+                    if (node.id === 'polytope' || node.id === 'llm_geometry') {
+                        nodeObject.rotation.y += 0.02;
+                        // Rotate ring if exists
+                        if (nodeObject.children[2]) {
+                            nodeObject.children[2].rotation.z += 0.01;
+                        }
+                    }
+                    
+                    // Update label size based on camera distance
+                    const label = labelSprites[node.id];
+                    if (label && label.visible) {
+                        const distance = camera.position.distanceTo(nodeObject.position);
+                        const scale = Math.min(12, Math.max(4, 8 * (1 + distance / 100)));
+                        label.scale.set(scale, scale * 0.25, 1);
+                        
+                        // Maintain high opacity for readability
+                        label.material.opacity = Math.max(0.8, Math.min(0.95, 1.2 - distance / 300));
+                    }
+                }
+            });
+            
+            renderer.render(scene, camera);
+        }
+        
+        // Initialize
+        initGraph();
+        animate();
+        
+        // Event listeners
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('click', onClick);
+        document.addEventListener('dblclick', onDoubleClick);
+        
+        // Start with evolution animation
+        setTimeout(() => {
+            animateEvolution();
+        }, 1000);
+    </script>
+</body>
+</html>

@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mathematical Family Tree of AI - 3D Visualization</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Mathematical Genealogy of AI</title>
     <style>
         * {
             margin: 0;
@@ -40,121 +39,143 @@
             top: 20px;
             left: 20px;
             z-index: 100;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 25px;
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
-            border: 1px solid #dee2e6;
-            max-width: 280px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            max-width: 260px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
         }
 
         h1 {
-            font-size: 1.4em;
-            margin-bottom: 10px;
-            color: #000000;
-            font-weight: 700;
-            letter-spacing: -0.5px;
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: #212529;
+            font-weight: 600;
+            letter-spacing: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
         }
 
         .subtitle {
-            font-size: 0.85em;
-            color: #495057;
-            margin-bottom: 20px;
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 16px;
             line-height: 1.4;
             font-weight: 400;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
         }
 
         button {
             display: block;
             width: 100%;
-            padding: 10px;
-            margin: 6px 0;
-            background: #212529;
+            padding: 8px 12px;
+            margin: 4px 0;
+            background: #343a40;
             border: none;
-            border-radius: 6px;
+            border-radius: 4px;
             color: white;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: background-color 0.2s;
             font-size: 13px;
             font-weight: 500;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
         }
 
         button:hover {
             background: #495057;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        button:active {
+            background: #212529;
         }
 
         .info {
             position: absolute;
             bottom: 20px;
             left: 20px;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 20px;
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
-            font-size: 13px;
-            max-width: 300px;
-            border: 1px solid #dee2e6;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background: #ffffff;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            max-width: 240px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
         }
 
         .legend {
             position: absolute;
             top: 20px;
             right: 20px;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 20px;
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
+            background: #ffffff;
+            padding: 16px;
+            border-radius: 8px;
             font-size: 12px;
-            border: 1px solid #dee2e6;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
         }
 
         .legend-item {
             display: flex;
             align-items: center;
-            margin: 8px 0;
+            margin: 6px 0;
             color: #212529;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
+        }
+
+        .legend-item span {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
         }
 
         .legend-color {
-            width: 20px;
-            height: 20px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
-            margin-right: 10px;
-            border: 1px solid rgba(0, 0, 0, 0.2);
+            margin-right: 8px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
         }
 
         .tooltip {
             position: absolute;
-            background: rgba(255, 255, 255, 0.98);
-            color: #000000;
-            padding: 12px 16px;
-            border-radius: 8px;
-            font-size: 13px;
+            background: #212529;
+            color: #ffffff;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
             pointer-events: none;
             z-index: 1000;
             display: none;
-            border: 1px solid #dee2e6;
-            max-width: 300px;
-            line-height: 1.5;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            max-width: 280px;
+            line-height: 1.4;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
         }
 
         .node-detail {
-            color: #495057;
+            color: #adb5bd;
             font-size: 11px;
             margin-top: 4px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
         }
 
         .stats {
-            color: #495057;
-            margin-top: 15px;
-            font-size: 12px;
-            line-height: 1.6;
+            color: #6c757d;
+            margin-top: 12px;
+            font-size: 11px;
+            line-height: 1.5;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
+        }
+        
+        .stats strong {
+            color: #212529;
+            font-weight: 600;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
+        }
+        
+        .stats div {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -174,37 +195,37 @@
     </div>
     
     <div class="legend">
-        <div style="font-weight: bold; margin-bottom: 10px; color: #000000;">Mathematical Domains</div>
+        <div style="font-weight: 600; margin-bottom: 8px; color: #212529; font-size: 12px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">Mathematical Domains</div>
         <div class="legend-item">
             <div class="legend-color" style="background: #c41e3a;"></div>
-            <span>Foundations</span>
+            <span style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">Foundations</span>
         </div>
         <div class="legend-item">
             <div class="legend-color" style="background: #2e7d32;"></div>
-            <span>Classical Methods</span>
+            <span style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">Classical Methods</span>
         </div>
         <div class="legend-item">
             <div class="legend-color" style="background: #1565c0;"></div>
-            <span>Machine Learning</span>
+            <span style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">Machine Learning</span>
         </div>
         <div class="legend-item">
             <div class="legend-color" style="background: #6a1b9a;"></div>
-            <span>Deep Learning</span>
+            <span style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">Deep Learning</span>
         </div>
         <div class="legend-item">
             <div class="legend-color" style="background: #ff6f00;"></div>
-            <span>Transformers/LLMs</span>
+            <span style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">Transformers/LLMs</span>
         </div>
     </div>
     
     <div class="info">
-        <div style="font-weight: bold; margin-bottom: 10px; color: #000000;">Visualization Info</div>
+        <div style="font-weight: 600; margin-bottom: 8px; color: #212529; font-size: 12px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">Visualization Info</div>
         <div class="stats">
-            <div>Nodes: <span id="nodeCount">0</span></div>
-            <div>Edges: <span id="edgeCount">0</span></div>
-            <div>Depth: <span id="treeDepth">0</span> levels</div>
-            <div style="margin-top: 10px; color: #000000;">
-                <strong>Navigation:</strong><br>
+            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">Nodes: <span id="nodeCount" style="font-weight: 500;">0</span></div>
+            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">Edges: <span id="edgeCount" style="font-weight: 500;">0</span></div>
+            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">Depth: <span id="treeDepth" style="font-weight: 500;">0</span> levels</div>
+            <div style="margin-top: 10px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
+                <strong style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">Navigation:</strong><br>
                 • Right-click + drag: Orbit<br>
                 • Scroll: Zoom<br>
                 • Click node: View details<br>
@@ -214,14 +235,14 @@
         </div>
     </div>
     
-    <div class="tooltip" id="tooltip"></div>
+    <div class="tooltip" id="tooltip" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;"></div>
     <canvas id="canvas"></canvas>
 
     <script>
         // Scene setup
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0xf8f9fa);
-        scene.fog = new THREE.Fog(0xf8f9fa, 150, 400);
+        scene.background = new THREE.Color(0xfafafa);
+        scene.fog = new THREE.Fog(0xfafafa, 150, 400);
         
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.position.set(0, 30, 80);
@@ -236,14 +257,12 @@
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 1.2;
         
-        // Professional lighting setup
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        // Clean, professional lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
         scene.add(ambientLight);
         
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.4);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.3);
         directionalLight.position.set(50, 100, 50);
         directionalLight.castShadow = true;
         directionalLight.shadow.mapSize.width = 2048;
@@ -253,10 +272,6 @@
         const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.2);
         directionalLight2.position.set(-50, 50, -50);
         scene.add(directionalLight2);
-        
-        const pointLight1 = new THREE.PointLight(0xffffff, 0.3, 150);
-        pointLight1.position.set(0, 50, 0);
-        scene.add(pointLight1);
 
         // Mathematical Family Tree Data Structure
         const mathTree = {
@@ -422,49 +437,68 @@
         let autoRotate = true;
         
         // Create text sprite for labels
-        function createTextSprite(text, fontSize = 48) {
+        function createTextSprite(text, fontSize = 40) {
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
             
             // Set canvas size
             canvas.width = 512;
-            canvas.height = 128;
+            canvas.height = 96;
             
-            // Configure text with black color
-            context.font = `bold ${fontSize}px 'Inter', 'Helvetica Neue', Arial, sans-serif`;
-            context.fillStyle = '#000000';
+            // White background
+            context.fillStyle = '#ffffff';
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Use simplified font specification for better consistency
+            context.font = `${fontSize}px -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif`;
+            context.fillStyle = '#212529';
             context.textAlign = 'center';
             context.textBaseline = 'middle';
             
-            // White background for better contrast
-            context.fillStyle = 'rgba(255, 255, 255, 0.9)';
-            context.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // Black text
-            context.fillStyle = '#000000';
-            
-            // Handle long text by wrapping or shrinking
+            // Handle long text
             let displayText = text;
-            if (text.length > 20) {
-                context.font = `bold ${fontSize * 0.8}px 'Inter', 'Helvetica Neue', Arial, sans-serif`;
-                displayText = text.length > 25 ? text.substring(0, 22) + '...' : text;
+            let actualFontSize = fontSize;
+            
+            // Measure text and adjust if needed
+            let metrics = context.measureText(text);
+            if (metrics.width > canvas.width - 20) {
+                actualFontSize = Math.floor(fontSize * 0.8);
+                context.font = `${actualFontSize}px -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif`;
+                metrics = context.measureText(text);
+                
+                if (metrics.width > canvas.width - 20) {
+                    displayText = text.length > 25 ? text.substring(0, 23) + '...' : text;
+                }
             }
             
-            // Draw text
+            // Clear and redraw with final settings
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            context.fillStyle = '#ffffff';
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw text with simplified font
+            context.fillStyle = '#212529';
+            context.font = `${actualFontSize}px -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif`;
             context.fillText(displayText, canvas.width / 2, canvas.height / 2);
+            
+            // Add subtle border
+            context.strokeStyle = '#e0e0e0';
+            context.lineWidth = 1;
+            context.strokeRect(0, 0, canvas.width, canvas.height);
             
             // Create texture and sprite
             const texture = new THREE.CanvasTexture(canvas);
             texture.needsUpdate = true;
+            texture.minFilter = THREE.LinearFilter;
+            texture.magFilter = THREE.LinearFilter;
             
             const spriteMaterial = new THREE.SpriteMaterial({
                 map: texture,
-                transparent: true,
-                opacity: 0.95
+                transparent: false
             });
             
             const sprite = new THREE.Sprite(spriteMaterial);
-            sprite.scale.set(8, 2, 1);
+            sprite.scale.set(8, 1.5, 1);
             
             return sprite;
         }
@@ -480,9 +514,9 @@
             const material = new THREE.MeshPhongMaterial({
                 color: nodeData.color,
                 emissive: nodeData.color,
-                emissiveIntensity: 0.1,
-                shininess: 30,
-                specular: 0x333333
+                emissiveIntensity: 0.05,
+                shininess: 20,
+                specular: 0x222222
             });
             
             const sphere = new THREE.Mesh(geometry, material);
@@ -490,23 +524,23 @@
             sphere.receiveShadow = true;
             group.add(sphere);
             
-            // Subtle glow
-            const glowGeometry = new THREE.SphereGeometry(radius * 1.2, 16, 16);
+            // Very subtle glow
+            const glowGeometry = new THREE.SphereGeometry(radius * 1.15, 16, 16);
             const glowMaterial = new THREE.MeshBasicMaterial({
                 color: nodeData.color,
                 transparent: true,
-                opacity: 0.05
+                opacity: 0.03
             });
             const glow = new THREE.Mesh(glowGeometry, glowMaterial);
             group.add(glow);
             
             // Add rings for special nodes
             if (nodeData.id === 'polytope' || nodeData.id === 'llm_geometry') {
-                const ringGeometry = new THREE.TorusGeometry(radius * 1.5, 0.1, 8, 32);
+                const ringGeometry = new THREE.TorusGeometry(radius * 1.5, 0.08, 8, 32);
                 const ringMaterial = new THREE.MeshBasicMaterial({
-                    color: 0xffa000,
+                    color: 0xff8f00,
                     transparent: true,
-                    opacity: 0.8
+                    opacity: 0.7
                 });
                 const ring = new THREE.Mesh(ringGeometry, ringMaterial);
                 ring.rotation.x = Math.PI / 2;
@@ -514,12 +548,12 @@
             }
             
             // Add text label with appropriate font size
-            const fontSize = nodeData.level === 0 ? 56 : 
-                           nodeData.level <= 2 ? 48 : 
-                           nodeData.level <= 5 ? 44 : 40;
+            const fontSize = nodeData.level === 0 ? 48 : 
+                           nodeData.level <= 2 ? 42 : 
+                           nodeData.level <= 5 ? 38 : 36;
             
             const label = createTextSprite(nodeData.label, fontSize);
-            label.position.y = radius + 2.5;
+            label.position.y = radius + 2.2;
             group.add(label);
             
             // Store label reference
@@ -538,12 +572,12 @@
             
             const geometry = new THREE.BufferGeometry().setFromPoints(points);
             
-            // Professional dark gray lines
+            // Professional light gray lines
             const material = new THREE.LineBasicMaterial({
-                color: 0x495057,
+                color: 0xadb5bd,
                 transparent: true,
-                opacity: 0.4,
-                linewidth: 2
+                opacity: 0.5,
+                linewidth: 1
             });
             
             const line = new THREE.Line(geometry, material);
@@ -698,10 +732,11 @@
                 tooltip.style.display = 'block';
                 tooltip.style.left = event.clientX + 15 + 'px';
                 tooltip.style.top = event.clientY - 30 + 'px';
+                tooltip.style.fontFamily = '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif';
                 tooltip.innerHTML = `
-                    <strong>${object.userData.label}</strong>
-                    <div class="node-detail">${object.userData.description}</div>
-                    <div class="node-detail">Level: ${object.userData.level}</div>
+                    <div style="font-weight: 500; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">${object.userData.label}</div>
+                    <div class="node-detail" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">${object.userData.description}</div>
+                    <div class="node-detail" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">Level: ${object.userData.level}</div>
                 `;
                 
                 document.body.style.cursor = 'pointer';
@@ -744,8 +779,8 @@
         function highlightPath(nodeId) {
             // Reset all edges
             edgeObjects.forEach(edge => {
-                edge.material.opacity = 0.15;
-                edge.material.color = new THREE.Color(0x495057);
+                edge.material.opacity = 0.2;
+                edge.material.color = new THREE.Color(0xadb5bd);
                 edge.material.linewidth = 1;
             });
             
@@ -760,9 +795,9 @@
                         e.userData.target === currentId
                     );
                     if (edge) {
-                        edge.material.opacity = 0.9;
-                        edge.material.color = new THREE.Color(0x212529);
-                        edge.material.linewidth = 3;
+                        edge.material.opacity = 1;
+                        edge.material.color = new THREE.Color(0x495057);
+                        edge.material.linewidth = 2;
                     }
                     currentId = node.parent;
                 } else {
@@ -840,7 +875,9 @@
                     const inPath = isInPath(node.id, 'polytope');
                     nodeObject.children[0].material.opacity = inPath ? 1 : 0.3;
                     if (label) {
-                        label.material.opacity = inPath ? 0.95 : 0.4;
+                        // Keep all labels fully visible for readability
+                        label.material.opacity = 1.0;
+                        // Can dim label colors instead if needed
                     }
                 }
             });
@@ -1043,11 +1080,11 @@
                     const label = labelSprites[node.id];
                     if (label && label.visible) {
                         const distance = camera.position.distanceTo(nodeObject.position);
-                        const scale = Math.min(12, Math.max(4, 8 * (1 + distance / 100)));
-                        label.scale.set(scale, scale * 0.25, 1);
+                        const scale = Math.min(10, Math.max(3, 6 * (1 + distance / 120)));
+                        label.scale.set(scale, scale * 0.19, 1);
                         
-                        // Maintain high opacity for readability
-                        label.material.opacity = Math.max(0.8, Math.min(0.95, 1.2 - distance / 300));
+                        // Keep labels fully opaque for readability
+                        label.material.opacity = 1.0;
                     }
                 }
             });
@@ -1068,6 +1105,10 @@
         setTimeout(() => {
             animateEvolution();
         }, 1000);
+        
+        // Ensure smooth text rendering
+        document.body.style.webkitFontSmoothing = 'antialiased';
+        document.body.style.mozOsxFontSmoothing = 'grayscale';
     </script>
 </body>
 </html>
